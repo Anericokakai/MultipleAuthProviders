@@ -2,9 +2,11 @@ package com.security.multiple_authproviders.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,13 +22,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return  http
-                .authorizeHttpRequests(req->req.requestMatchers("/home").hasAuthority("read")
+                .authorizeHttpRequests(req->req.requestMatchers(HttpMethod.POST,"/users/**").hasAuthority("write")
                         .anyRequest().authenticated()
-
-
                 )
 
                 .httpBasic(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 .build();
 
